@@ -24,7 +24,7 @@
         <div id="J_loginCoreWrap" class="infro">
           <div class="username" id="username_div"> <span></span>
             <input style="display:none">
-            <input class="user" id="txtUsername" name="txtUsername" type="text" autocomplete="off" maxlength="40" value="" errordata="0" tabindex="1" placeholder="请输入您的手机号码" >
+            <input class="user" id="txtUsername" name="txtUsername" type="text" autocomplete="off" maxlength="11" value="" errordata="0" tabindex="1" placeholder="请输入您的手机号码" onkeyup="value=value.replace(/[^\d]/g, '')" >
 
                 <script type="text/javascript" src="/static/jq/jquery.js"></script>
                     <script>
