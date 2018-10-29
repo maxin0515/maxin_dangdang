@@ -1,0 +1,127 @@
+<style>
+	.d1{
+		background-color: rgb(53,60,68);
+		position: relative;
+		height: 30px;
+		line-height: 30px;
+		padding-left: 10px;
+	}
+	.s1{
+		font-size: 12px;
+		color: white;
+	}
+	.s2{
+		position: absolute;
+		right: 10px;
+	}
+	.s2 a{
+		color: white;
+		font-size: 12px;
+		text-decoration: none;
+	}
+	.t1{
+		border-color:aliceblue;
+		margin-top: 2px;
+		font-size: 12px;
+		text-align: center;
+		background-color: rgb(230,242,254);
+	}
+	.bottom{
+		font-size: 13px;
+		padding-left: 15px;
+		position: relative;
+	}
+	.bs{
+		position: absolute;
+		right: 40px;
+	}
+	.bs a{
+		text-decoration: none;
+		color: black;
+	}
+	.bs a:hover{
+		color: cornflowerblue;
+		text-decoration: underline;
+	}
+</style>
+<div class="d1">
+	<span class="s1">订单管理</span>
+	<span class="s2">
+		<a href="javascript:void 0">添加</a>
+		<a href="javascript:void 0" id="order_delete">删除</a>
+	</span>
+</div>
+<table border="2" width="100%" cellspacing="0" class="t1">
+	<tr>
+		<td>
+			<input type="checkbox" id="choose_all"/>
+		</td>
+		<td>订单ID</td>
+		<td>订单号</td>
+        <td>收件人</td>
+		<td>创建时间</td>
+		<td>地址ID</td>
+		<td>总金额</td>
+		<td>支付状态</td>
+	</tr>
+    {% for foo in page %}
+        <tr>
+            <td>
+                <input type="checkbox" id="{{ foo.order_id }}" class="order" name="choose_order" onclick="choose_on(this)"/>
+            </td>
+            <td>{{ foo.order_id }}</td>
+            <td>{{ foo.num }}</td>
+            <td>{{ foo.order_user_id }}</td>
+            <td>{{ foo.create_date }}</td>
+            <td>{{ foo.order_address_id }}</td>
+            <td>{{ foo.total_price }}</td>
+            <td>{{ foo.status }}</td>
+	    </tr>
+    {% endfor %}
+
+</table>
+<div class="bottom">
+	共有 {{ amount }} 条记录，当前第 {{ page.number }} 页，共 {{ page.paginator.num_pages }} 页
+	<span class="bs">
+		{% if page.has_previous %}
+            <a href="{% url 'management:dzlist' %}?num={{ page.previous_page_number }}" style="margin-right: 20px;">上一页</a>
+        {% endif %}
+		{% if page.has_next %}
+            <a href="{% url 'management:dzlist' %}?num={{ page.next_page_number }}">下一页</a>
+        {% endif %}
+	</span>
+</div>
+<script type="text/javascript" src="/static/jq/jquery.js"></script>
+<script>
+        $("#choose_all").click(function(){
+            console.log($(this).is(':checked'));
+            if ($(this).is(':checked')){
+                $("input[name='choose_order']").attr("checked","true");
+                $("input[name='choose_order']").prop("checked","true");
+            }else{
+                $("input[name='choose_order']").removeAttr("checked");
+            }
+        });
+        $("#order_delete").click(function() {
+            var order_choose_on_list = $("input.order[checked]");
+            var order_choose_id = ""
+            if (order_choose_on_list.length == 0){
+                alert("没有选中的订单！")
+            }else{
+                for (var i=0;i<order_choose_on_list.length;i++){
+                    order_choose_id += "," + order_choose_on_list[i].id
+            }
+            order_choose_id = order_choose_id.substring(1,order_choose_id.length)
+                console.log(order_choose_id)
+            location.href = "{% url 'management:order_delete' %}?order_id="+order_choose_id
+            }
+        })
+        var choose_on = function (dom) {
+            if ($(dom).is(':checked')){
+                $(dom).attr("checked","true");
+                $(dom).prop("checked","true");
+            }else{
+                $(dom).removeAttr("checked");
+            }
+        }
+</script>

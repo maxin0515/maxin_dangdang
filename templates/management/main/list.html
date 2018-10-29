@@ -1,0 +1,128 @@
+<style>
+	.d1{
+		background-color: rgb(53,60,68);
+		position: relative;
+		height: 30px;
+		line-height: 30px;
+		padding-left: 10px;
+	}
+	.s1{
+		font-size: 12px;
+		color: white;
+	}
+	.s2{
+		position: absolute;
+		right: 10px;
+	}
+	.s2 a{
+		color: white;
+		font-size: 12px;
+		text-decoration: none;
+	}
+	.t1{
+		border-color:aliceblue;
+		margin-top: 2px;
+		font-size: 12px;
+		text-align: center;
+		background-color: rgb(230,242,254);
+	}
+	.bottom{
+		font-size: 13px;
+		padding-left: 15px;
+		position: relative;
+	}
+	.bs{
+		position: absolute;
+		right: 40px;
+	}
+	.bs a{
+		text-decoration: none;
+		color: black;
+	}
+	.bs a:hover{
+		color: cornflowerblue;
+		text-decoration: underline;
+	}
+</style>
+<div class="d1">
+	<span class="s1">管理人员基本信息表</span>
+	<span class="s2">
+		<a href="#">添加</a>
+		<a href="javascript:void 0" id="book_delete">删除</a>
+	</span>
+</div>
+<table border="2" width="100%" cellspacing="0" class="t1">
+	<tr>
+		<td>
+			<input type="checkbox" id="choose_all"/>
+		</td>
+		<td>商品ID</td>
+		<td>商品名称</td>
+		<td>作者</td>
+		<td>出版社</td>
+		<td>市场价</td>
+		<td>当当价</td>
+		<td>库存</td>
+		<td>商品种类</td>
+		<td>基本操作</td>
+	</tr>
+    {% for foo in page %}
+        	<tr>
+		<td>
+			<input type="checkbox" name="choose_book" id="{{ foo.book_id }}" class="book"/>
+		</td>
+		<td>{{ foo.book_id }}</td>
+		<td>{{foo.book_name }}</td>
+		<td>{{foo.book_author}}</td>
+		<td>{{ foo.publishing_house }}</td>
+		<td>{{foo.book_price }}</td>
+		<td>{{ foo.book_dprice }}</td>
+		<td>{{ foo.inventory }}</td>
+		<td>{{ foo.book_category.category_name }}</td>
+		<td>
+		<a href="#">添加</a>
+		<a href="{% url 'management:book_delete_ajax' %}?book_id={{ foo.book_id }}">删除</a>
+	</td>
+	</tr>
+    {% endfor %}
+
+</table>
+<div class="bottom">
+	共有 {{ book_num }} 条记录，当前第 {{ page.number }} 页，共 {{ page.paginator.num_pages }} 页
+	<span class="bs">
+        {% if page.has_previous %}
+            <a href="{% url 'management:list' %}?num={{ page.previous_page_number }}" style="margin-right: 20px;">上一页</a>
+        {% endif %}
+		{% if page.has_next %}
+            <a href="{% url 'management:list' %}?num={{ page.next_page_number }}">下一页</a>
+        {% endif %}
+	</span>
+</div>
+<script type="text/javascript" src="/static/jq/jquery.js"></script>
+<script>
+    $(function () {
+        $("#choose_all").click(function(){
+            console.log($(this).is(':checked'));
+            if ($(this).is(':checked')){
+                $("input[name='choose_book']").attr("checked","true");
+                $("input[name='choose_book']").prop("checked","true");
+            }else{
+                $("input[name='choose_book']").removeAttr("checked");
+            }
+        })
+        $("#book_delete").click(function() {
+            var book_choose_on_list = $("input.book[checked]");
+            var book_choose_id = ""
+            if (book_choose_on_list.length == 0){
+                alert("没有选中的书籍！")
+            }else{
+                for (var i=0;i<book_choose_on_list.length;i++){
+                    book_choose_id += "," + book_choose_on_list[i].id
+            }
+            book_choose_id = book_choose_id.substring(1,book_choose_id.length)
+            location.href = "{% url 'management:book_delete_ajax' %}?book_id="+book_choose_id
+            }
+        })
+    })
+
+</script>

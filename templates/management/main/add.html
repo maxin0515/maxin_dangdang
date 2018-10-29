@@ -1,0 +1,106 @@
+<style>
+	.table1{
+		border-color: lightgray;
+	}
+	.td1,.td2{
+		height: 36px;
+	}
+	.td1{
+		text-align: right;
+		padding-right: 5px;
+		background-color: rgb(230,242,254);
+		font-size: 14px;
+	}
+	.td2{
+		padding-left: 5px;
+	}
+    #add_book{
+        display: block;
+        text-align: center;
+        margin-top: 10px;
+        margin-left: 500px;
+        height: 30px;
+    }
+</style>
+<table class="table1" border="1" cellspacing="0" width="1110px">
+	<tr>
+		<td class="td1">商品名称:</td>
+		<td class="td2"><input type="text"  id="book_name" onkeyup="this.value=this.value.replace(/\s+/g,'')" /></td>
+	</tr>
+	<tr>
+		<td class="td1">作者:</td>
+		<td class="td2" ><input type="text" id="book_author" onkeyup="this.value=this.value.replace(/\s+/g,'')" /></td>
+	</tr>
+	<tr>
+		<td class="td1">出版社:</td>
+		<td class="td2"><input type="text" id="publishing_house" onkeyup="this.value=this.value.replace(/\s+/g,'')" /></td>
+	</tr>
+	<tr>
+		<td class="td1">商品父类:</td>
+		<td class="td2">
+			<select id="subcategory">
+                {% for ele_category in subcategory %}
+                    <option value="{{ ele_category.id }}">{{ ele_category.category_name }}</option>
+                {% endfor %}
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td class="td1">出版日期:</td>
+		<td class="td2">
+			<input type="date" id="publication_time"/>
+		</td>
+	</tr>
+		<tr>
+		<td class="td1" >上架日期:</td>
+		<td class="td2">
+			<input type="date" id="shelves_date"/>
+		</td>
+	</tr>
+
+</table>
+<input type="button" value="确定" id="add_book">
+<script type="text/javascript" src="/static/jq/jquery.js"></script>
+<script>
+    $("#add_book").click(function () {
+        var book_name = $("#book_name").val();
+        var book_author = $("#book_author").val();
+        var publishing_house = $("#publishing_house").val();
+        var subcategory = $("#subcategory").val();
+        var publication_time = $("#publication_time").val();
+        var shelves_date = $("#shelves_date").val();
+        console.log(typeof(book_name),book_author,publishing_house,subcategory,publication_time,shelves_date)
+        var csrftoken = "{{ csrf_token }}";
+        if (book_name == ""){
+            alert("请输入书名！")
+        }else
+        if (book_author == ""){
+            alert("请输入作者！")
+        }else
+        if (publishing_house == ""){
+            alert("请输入出版社！")
+        }else
+        if (subcategory == ""){
+            alert("请输入类名！")
+        }else
+        if (publication_time == ""){
+            alert("请选择出版日期！")
+        }else
+        if (shelves_date == ""){
+            alert("请选择上架时间！")
+        }else{
+            $.ajaxSetup({headers:{"X-CSRFToken":csrftoken}});
+            $.ajax({
+                type:"post",//请求方式get/post
+                url:"{% url 'management:add_book_ajax' %}",//请求地址
+                data:{book_name:book_name,book_author:book_author,shelves_date:shelves_date,publishing_house:publishing_house,subcategory:subcategory,publication_time:publication_time},//请求参数
+                dataType:"json",
+                success:function(abc){//abc==xhr.responseText或解析后的js对象
+                    console.log("OK");
+                    alert("添加成功！")
+                }
+            });
+        }
+    })
+
+</script>
