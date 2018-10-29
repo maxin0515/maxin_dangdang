@@ -50,7 +50,7 @@
                             <td class="t">邮箱／手机号码</td>
                             <td class="z_index2">
                                 <input name="txt_username" id="txt_username" autocomplete="off" maxlength="11"
-                                       tabindex="1" value="" placeholder="请输入您的邮箱或手机号码" class="text" type="text">
+                                       tabindex="1" value="" placeholder="请输入您的邮箱或手机号码" class="text" type="text" onkeyup="value=value.replace(/[^\d]/g, '')">
                                 <span id="spn_username_ok" class="icon_wrong" style="display: none;"></span>
                                 <span id="load_statue" style="display: none;height: 38px"><img src="/static/ajax/load.gif" style="display: inline-block;height: 38px"></span>
                                 <span id="J_tipUsername" class="cue warn"></span>
